@@ -1,0 +1,64 @@
+# %% [code] {"execution":{"iopub.status.busy":"2025-10-26T10:31:46.615799Z","iopub.execute_input":"2025-10-26T10:31:46.616584Z","iopub.status.idle":"2025-10-26T10:31:46.625815Z","shell.execute_reply.started":"2025-10-26T10:31:46.616554Z","shell.execute_reply":"2025-10-26T10:31:46.624839Z"},"jupyter":{"outputs_hidden":false}}
+# This Python 3 environment comes with many helpful analytics libraries installed
+# It is defined by the kaggle/python Docker image: https://github.com/kaggle/docker-python
+# For example, here's several helpful packages to load
+
+import numpy as np # linear algebra
+import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
+
+# Input data files are available in the read-only "../input/" directory
+# For example, running this (by clicking run or pressing Shift+Enter) will list all files under the input directory
+
+import os
+for dirname, _, filenames in os.walk('/kaggle/input'):
+    for filename in filenames:
+        print(os.path.join(dirname, filename))
+
+# You can write up to 20GB to the current directory (/kaggle/working/) that gets preserved as output when you create a version using "Save & Run All" 
+# You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
+
+# %% [code] {"execution":{"iopub.status.busy":"2025-10-26T10:31:46.627292Z","iopub.execute_input":"2025-10-26T10:31:46.627618Z","iopub.status.idle":"2025-10-26T10:31:46.641507Z","shell.execute_reply.started":"2025-10-26T10:31:46.627596Z","shell.execute_reply":"2025-10-26T10:31:46.640494Z"},"jupyter":{"outputs_hidden":false}}
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestRegressor
+from matplotlib import pyplot as plt
+import os
+from sklearn.metrics import r2_score
+
+# %% [code] {"execution":{"iopub.status.busy":"2025-10-26T10:31:46.642629Z","iopub.execute_input":"2025-10-26T10:31:46.643068Z","iopub.status.idle":"2025-10-26T10:31:46.710399Z","shell.execute_reply.started":"2025-10-26T10:31:46.643032Z","shell.execute_reply":"2025-10-26T10:31:46.709150Z"},"jupyter":{"outputs_hidden":false}}
+dataset=pd.read_csv('/kaggle/input/global-crocodile-species-dataset/crocodile_dataset.csv')
+df=pd.DataFrame(dataset)
+df.duplicated().sum()
+df.dropna()
+df.drop(['Common Name'],axis=1)
+
+# %% [code] {"execution":{"iopub.status.busy":"2025-10-26T10:31:46.711477Z","iopub.execute_input":"2025-10-26T10:31:46.711715Z","iopub.status.idle":"2025-10-26T10:31:46.717297Z","shell.execute_reply.started":"2025-10-26T10:31:46.711697Z","shell.execute_reply":"2025-10-26T10:31:46.716557Z"},"jupyter":{"outputs_hidden":false}}
+print(df.columns)
+
+# %% [code] {"execution":{"iopub.status.busy":"2025-10-26T10:31:46.719867Z","iopub.execute_input":"2025-10-26T10:31:46.720238Z","iopub.status.idle":"2025-10-26T10:31:46.738267Z","shell.execute_reply.started":"2025-10-26T10:31:46.720208Z","shell.execute_reply":"2025-10-26T10:31:46.737300Z"},"jupyter":{"outputs_hidden":false}}
+x=df['Observed Length (m)']
+y=df['Observed Weight (kg)']
+
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.3,random_state=42)
+
+rf_model=RandomForestRegressor(n_estimators=100,random_state=42)
+
+# %% [code] {"execution":{"iopub.status.busy":"2025-10-26T10:31:46.739534Z","iopub.execute_input":"2025-10-26T10:31:46.739907Z","iopub.status.idle":"2025-10-26T10:31:46.932651Z","shell.execute_reply.started":"2025-10-26T10:31:46.739874Z","shell.execute_reply":"2025-10-26T10:31:46.931413Z"},"jupyter":{"outputs_hidden":false}}
+x_train=x_train.values.reshape(-1,1)
+
+rf_model.fit(x_train,y_train)
+
+print("rf model trained successfully")
+
+# %% [code] {"execution":{"iopub.status.busy":"2025-10-26T10:31:46.933970Z","iopub.execute_input":"2025-10-26T10:31:46.934316Z","iopub.status.idle":"2025-10-26T10:31:46.954234Z","shell.execute_reply.started":"2025-10-26T10:31:46.934288Z","shell.execute_reply":"2025-10-26T10:31:46.952405Z"},"jupyter":{"outputs_hidden":false}}
+x_test=x_test.values.reshape(-1,1)
+predictions=rf_model.predict(x_test)
+score=r2_score(y_test,predictions)
+
+print(f"Model R-squared score: {score:.4f}")
+
+# %% [code] {"execution":{"iopub.status.busy":"2025-10-26T10:31:46.954938Z","iopub.execute_input":"2025-10-26T10:31:46.955230Z","iopub.status.idle":"2025-10-26T10:31:47.166535Z","shell.execute_reply.started":"2025-10-26T10:31:46.955201Z","shell.execute_reply":"2025-10-26T10:31:47.165296Z"},"jupyter":{"outputs_hidden":false}}
+plt.figure(figsize=(10,6))
+x_axis=x_train
+y_axis=x_test
+plt.plot(y_test,predictions,color='red',lw='2')

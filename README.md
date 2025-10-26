@@ -1,57 +1,56 @@
-# %% [code] {"execution":{"iopub.status.busy":"2025-10-26T10:31:46.615799Z","iopub.execute_input":"2025-10-26T10:31:46.616584Z","iopub.status.idle":"2025-10-26T10:31:46.625815Z","shell.execute_reply.started":"2025-10-26T10:31:46.616554Z","shell.execute_reply":"2025-10-26T10:31:46.624839Z"},"jupyter":{"outputs_hidden":false}}
-# This Python 3 environment comes with many helpful analytics libraries installed
-# It is defined by the kaggle/python Docker image: https://github.com/kaggle/docker-python
-# For example, here's several helpful packages to load
+🐊 Crocodile Weight Prediction using Random Forest Regressor
+📘 Overview
 
-import numpy as np # linear algebra
-import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
+This project builds a machine learning regression model to predict the observed weight of crocodiles based on their observed length. Using a Random Forest Regressor, the model learns the relationship between length and weight from real or synthetic data and makes accurate predictions on unseen samples.
 
-# Input data files are available in the read-only "../input/" directory
-# For example, running this (by clicking run or pressing Shift+Enter) will list all files under the input directory
+🧠 Key Features
 
-import os
-for dirname, _, filenames in os.walk('/kaggle/input'):
-    for filename in filenames:
-        print(os.path.join(dirname, filename))
+Implements Random Forest Regression using scikit-learn
 
-# You can write up to 20GB to the current directory (/kaggle/working/) that gets preserved as output when you create a version using "Save & Run All" 
-# You can also write temporary files to /kaggle/temp/, but they won't be saved outside of the current session
+Performs data preprocessing, training, testing, and evaluation
 
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor
-from matplotlib import pyplot as plt
-import os
-from sklearn.metrics import r2_score
+Visualizes Actual vs Predicted results with matplotlib
 
-dataset=pd.read_csv('/kaggle/input/global-crocodile-species-dataset/crocodile_dataset.csv')
-df=pd.DataFrame(dataset)
-df.duplicated().sum()
-df.dropna()
-df.drop(['Common Name'],axis=1)
+Calculates performance metrics such as R² Score and RMSE
 
-print(df.columns)
+Provides a clean, reproducible pipeline for regression analysis
 
-x=df['Observed Length (m)']
-y=df['Observed Weight (kg)']
+A Python-based machine learning project that predicts crocodile weight from its observed length using a Random Forest Regressor.
+It includes end-to-end model building with data preprocessing, training, evaluation (R², RMSE), and comparison plots between actual and predicted values.
 
-x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.3,random_state=42)
+🚀 Upcoming Features:
 
-rf_model=RandomForestRegressor(n_estimators=100,random_state=42)
+One-Hot Encoding for handling categorical data
 
-x_train=x_train.values.reshape(-1,1)
+Feature scaling and normalization support
 
-rf_model.fit(x_train,y_train)
+Automated hyperparameter tuning for better model performance
 
-print("rf model trained successfully")
+Pipeline integration for reproducible training and deployment
 
-x_test=x_test.values.reshape(-1,1)
-predictions=rf_model.predict(x_test)
-score=r2_score(y_test,predictions)
+This project applies Random Forest Regression to model the non-linear relationship between crocodile length and weight.
+It aims to support ecological and biological data analysis using machine learning techniques.
 
-print(f"Model R-squared score: {score:.4f}")
+🔍 Current Features:
 
-plt.figure(figsize=(10,6))
-x_axis=x_train
-y_axis=x_test
-plt.plot(y_test,predictions,color='red',lw='2')
+Data cleaning and preprocessing
+
+Random Forest model training & evaluation
+
+Visual performance comparison (Actual vs Predicted plots)
+
+🧭 Future Enhancements:
+
+One-Hot Encoding for categorical fields
+
+Scaling and transformation of numerical features
+
+Automated hyperparameter optimization
+
+Cross-validation for improved generalization
+
+Model export and deployment support
+
+The repository will be continuously updated as new features are implemented.
+
+This project is under active development — more features and optimizations will be added soon!
